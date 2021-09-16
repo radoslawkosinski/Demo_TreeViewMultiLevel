@@ -1,0 +1,44 @@
+﻿<Application x:Class="WPFEmptyProject.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:WPFEmptyProject"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.Blue.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Purple.xaml"/>
+
+            </ResourceDictionary.MergedDictionaries>
+            <Style x:Key="TextBoxStyle" TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignTextBox}">
+                <Setter Property="FontSize" Value="12"></Setter>
+                <Setter Property="BorderBrush" Value="Blue"></Setter>
+                <Setter Property="Height" Value="22"></Setter>
+                <Setter Property="Width" Value="200"></Setter>
+            </Style>
+            <Style x:Key="ErrorTextBlock" TargetType="{x:Type TextBlock}">
+                <Setter Property="FontSize" Value="10"></Setter>
+                <Setter Property="Foreground" Value="Red"></Setter>
+                <Setter Property="FontStyle" Value="Italic"></Setter>
+                <Setter Property="TextAlignment" Value="Left"></Setter>
+                <Setter Property="Margin" Value="0"></Setter>
+            </Style>
+            <Style x:Key="ButtonDownNormal" TargetType="ButtonBase" BasedOn="{StaticResource MaterialDesignFlatDarkBgButton}">
+                <Setter Property="FontSize" Value="8"></Setter>
+                <Setter Property="FontWeight" Value="Light"></Setter>
+                <Setter Property="Width" Value="60"></Setter>
+                <Setter Property="Height" Value="25"></Setter>
+                <Setter Property="Margin" Value="5"></Setter>
+            </Style>
+            <Style x:Key="SmallButtonDown" TargetType="ButtonBase" BasedOn="{StaticResource MaterialDesignIconForegroundButton}">
+                <Setter Property="FontSize" Value="8"></Setter>
+                <Setter Property="FontWeight" Value="Light"></Setter>
+                <Setter Property="Width" Value="40"></Setter>
+                <Setter Property="Height" Value="25"></Setter>
+                <Setter Property="Margin" Value="5"></Setter>
+            </Style>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
