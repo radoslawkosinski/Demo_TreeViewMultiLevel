@@ -10,14 +10,22 @@
         Title="MainWindow" Height="800" Width="800">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200"></ColumnDefinition>
+            <ColumnDefinition Width="300"></ColumnDefinition>
             <ColumnDefinition Width="Auto"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <StackPanel Orientation="Horizontal" Grid.Column="0" VerticalAlignment="Top">
-            <TreeView  Margin="8" ItemsSource="{Binding NoteTreeViewItems}" Width="344" 
-                      local:TvAttached.TreeViewSelectedItem="{Binding CurrentClickedNote, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
+        <Grid.RowDefinitions>
+            <RowDefinition Height="9*"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <DockPanel 
+                    Grid.Column="0" 
+                    Grid.Row="0"
+                    VerticalAlignment="Stretch" 
+                    HorizontalAlignment="Stretch">
+            <TreeView  ItemsSource="{Binding NoteTreeViewItems}" 
+                       local:TvAttached.TreeViewSelectedItem="{Binding CurrentClickedNote, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
                        ext:MouseDoubleClick.Command="{Binding ShowNoteDetailsCommand}"
-                       Height="350" 
+                       Height="Auto" 
                        BorderThickness="1">
 
                 <TreeView.ItemTemplate>
@@ -27,8 +35,6 @@
 
                 </TreeView.ItemTemplate>
                 <TreeView.ItemContainerStyle>
-
-                    <!--<Style TargetType="{x:Type TreeViewItem}">-->
                     <Style TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource MaterialDesignTreeViewItem}">
                         <Setter Property="IsSelected" Value="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}"/>
                         <Setter Property="IsExpanded" Value="{Binding IsExpanded, UpdateSourceTrigger=PropertyChanged}"/>
@@ -41,25 +47,32 @@
 
             
 
-        </StackPanel>
+        </DockPanel>
+        <DockPanel HorizontalAlignment="Left" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
+            <Button Command="{Binding SelectFirstNodeCommand}" Width="100" Margin="5">Select first</Button>
+            <Label FontSize="16" VerticalAlignment="Center" Content="Demonstrate dynamic searching, type text in TextBox:"></Label>
+            <TextBox Height="40" Width="150" Margin="10" Text="{Binding SearchString, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+        </DockPanel>
 
-
-        <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Top" Height="Auto" >
-            
-            <Label Content="Clicked note details:" FontSize="32"></Label>
-            <StackPanel Orientation="Horizontal">
-                <Label Content="Name:" FontSize="16"></Label>
-                <TextBlock FontSize="16" Text="{Binding Path=CurrentClickedNote.Name }" ></TextBlock>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <Label Content="Description:" FontSize="16"></Label>
-                <TextBlock FontSize="16" Text="{Binding Path=CurrentClickedNote.Description }" ></TextBlock>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <Label Content="Type:" FontSize="16"></Label>
-                <TextBlock FontSize="16" Text="{Binding Path=CurrentClickedNote.TreeNodeType }" ></TextBlock>
-            </StackPanel>
-        </StackPanel>
+        <Grid Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"></ColumnDefinition>
+                <ColumnDefinition Width="200"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Label FontWeight="Bold" Grid.Row="1" Grid.Column="0" Content="Name:" FontSize="16"></Label>
+            <TextBlock Grid.Row="1" Grid.Column="1" FontSize="16" Text="{Binding Path=CurrentClickedNote.Name }" ></TextBlock>
+            <Label FontWeight="Bold" Grid.Row="2" Grid.Column="0" Width="200" Content="Description:" FontSize="16"></Label>
+            <TextBlock Grid.Row="2" Grid.Column="1"  FontSize="16" Text="{Binding Path=CurrentClickedNote.Description }" ></TextBlock>
+            <Label FontWeight="Bold" Grid.Row="3" Grid.Column="0"  Width="200" Content="Type:" FontSize="16"></Label>
+            <TextBlock Grid.Row="3" Grid.Column="1" FontSize="16" Text="{Binding Path=CurrentClickedNote.TreeNodeType }" ></TextBlock>
+            <Label FontWeight="Bold" Width="Auto" Background="blue" Foreground="White" Grid.Row="0" FontSize="16" Grid.ColumnSpan="2" Content="Clicked column details"></Label>
+        </Grid>
     </Grid>
 
 </Window>

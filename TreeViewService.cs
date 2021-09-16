@@ -145,9 +145,7 @@ namespace TreeViewExperimentsIntegration
             {
                 tvi.ParentTreeViewItem = tvi;
                 tvi.ParentTreeViewItem.IsExpanded = true;
-                //tvi.ParentTreeViewItem.IsSelected = true;
-                //tvi.ParentTreeViewItem.IsExpanded = true;
-                //tvi.ParentTreeViewItem.IsSelected = false;
+
                 updateItems(tvi);
             }
             }
@@ -157,9 +155,7 @@ namespace TreeViewExperimentsIntegration
             {
                 si.ParentTreeViewItem = ti;
                 ti.ParentTreeViewItem.IsExpanded = true;
-                //ti.ParentTreeViewItem.IsSelected = true;
-                //ti.ParentTreeViewItem.IsExpanded = true;
-                //ti.ParentTreeViewItem.IsSelected = false;
+
                 updateItems(si);
             }
         }
@@ -172,9 +168,7 @@ namespace TreeViewExperimentsIntegration
             {
                 tvi.ParentTreeViewItem = tvi;
                 tvi.ParentTreeViewItem.IsExpanded = true;
-                //tvi.ParentTreeViewItem.IsSelected = true;
-                //tvi.ParentTreeViewItem.IsExpanded = true;
-                //tvi.ParentTreeViewItem.IsSelected = false;
+
                 expandOrColapseAll(tvi,expand);
             }
         }
@@ -185,9 +179,7 @@ namespace TreeViewExperimentsIntegration
             {
                 si.ParentTreeViewItem = ti;
                 ti.ParentTreeViewItem.IsExpanded = true;
-                //ti.ParentTreeViewItem.IsSelected = true;
-                //ti.ParentTreeViewItem.IsExpanded = true;
-                //ti.ParentTreeViewItem.IsSelected = false;
+
                 expandOrColapseAll(si, expand);
             }
         }
@@ -208,10 +200,6 @@ namespace TreeViewExperimentsIntegration
                         
                         var mainNote = new NoteTreeViewItem().FromNoteItem(notatka);
 
-                        //if (notatka.Id == 2) mainNote.NodeVisibility = Visibility.Collapsed;
-
-                        //grp.IsExpanded = true;
-                        //grp.IsExpanded = false;
                         grp.SubItems.Add(
                             mainNote
                             );
@@ -221,8 +209,7 @@ namespace TreeViewExperimentsIntegration
                     foreach (Folder sfol in fol.Folders)
                     {
                         var sfolNote = enumerateSubFolders(sfol);
-                        //sfolNote.IsExpanded = true;
-                        //sfolNote.IsExpanded = false;
+
                         grp.SubItems.Add(sfolNote);
                     }
                 expandOrColapseAll(true);
@@ -231,9 +218,6 @@ namespace TreeViewExperimentsIntegration
             }
 
             updateParentItems();
-
-            //TreeViewItems[0].IsExpanded = true;
-            //TreeViewItems[0].IsSelected = true;
         }
 
 

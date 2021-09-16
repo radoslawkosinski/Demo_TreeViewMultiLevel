@@ -29,22 +29,36 @@ namespace WPFEmptyProject
         }
 
 
+        /// <summary>
+        /// flat version of NoteTreeViewItems with pointers to notes only
+        /// we need it for searching so no need to use recurency 
+        /// </summary>
+        ObservableCollection<NoteTreeViewItem> noteTreeViewItemsFlat;
+        public ObservableCollection<NoteTreeViewItem> NoteTreeViewItemsFlat
+        {
+            get { return noteTreeViewItemsFlat; }
+            set { this.RaiseAndSetIfChanged(ref noteTreeViewItemsFlat, value); }
+        }
+
+
         public ReactiveCommand<Unit, Unit> ShowNoteDetailsCommand { get; }
 
+        public ReactiveCommand<Unit, Unit> SelectFirstNodeCommand { get; }
 
-        public bool canOperateOnNote = true; //dev only
-            public bool CanOperateOnNote
+
+
+        /// <summary>
+        /// search string entered in textbox to demonstrate dynamic treeview filtering by setting visible=false property on tree view nodes 
+        /// that does not match search criteria
+        /// </summary>
+            string searchString;
+            public string SearchString
             {
-                get { return canOperateOnNote; }
-                set { this.RaiseAndSetIfChanged(ref canOperateOnNote, value); }
+                get { return searchString; }
+                set { 
+                this.RaiseAndSetIfChanged(ref searchString, value);
+                FilterNodes(value);
             }
-
-
-            string docContent;
-            public string DocContent
-            {
-                get { return docContent; }
-                set { this.RaiseAndSetIfChanged(ref docContent, value); }
             }
 
         NoteTreeViewItem currentClickedNote;
@@ -52,80 +66,86 @@ namespace WPFEmptyProject
         {
             get { return currentClickedNote; }
             set {
-                //value = value.TreeNodeType == TreeViewItem.NodeType.Note ? value : null;
-                //this.RaiseAndSetIfChanged(ref currentClickedNote, value); ;
+
                 this.RaiseAndSetIfChanged(ref currentClickedNote, value); 
             }
         }
 
 
-        //TreeViewItem currentFolder;
-        //public TreeViewItem CurrentFolder
-        //{
-        //    get { return currentClickedNote; }
-        //    set { this.RaiseAndSetIfChanged(ref currentFolder, value); }
-        //}
-
-        //private ObservableCollection<Entry> entries;
-        //public ObservableCollection<Entry> Entries
-        //{
-        //    get { return entries; }
-        //    set { this.RaiseAndSetIfChanged(ref entries, value); }
-        //}
-        //public ObservableCollection<ITreeViewItem> Children { get; set; }
-
-
-
-
-        //private Notatka currentNote;
-        //public Notatka CurrentNote
-        //{
-        //    get
-        //    {
-        //        return currentNote;
-        //    }
-        //    set
-        //    {
-        //        this.RaiseAndSetIfChanged(ref currentNote, value);
-        //    }
-        //}
-
-        //ctor..
         public MainWindowViewModel()
             {
-                //Groups = new ObservableCollection<Group>();
+            
+            NoteTreeViewItems = new ObservableCollection<NoteTreeViewItem>();
 
-                NoteTreeViewItems = new ObservableCollection<NoteTreeViewItem>();
+            NoteTreeViewItemsFlat = new ObservableCollection<NoteTreeViewItem>();
 
-                this.canOperateOnNote = true;
 
                 treeViewDataLoader = new TreeViewService();
 
-                //treeViewDataLoader.PopulateListOfNotes();
-
-                
+               
 
                 populateTree();
 
-            //Load();
-
-            //Load2ndTree();
-            //Load();
-            //sample command            
-            //ShowNoteDetailsCommand = ReactiveCommand.Create<bool>(_ => DeleteInFirstTv(), this.WhenAnyValue(x => x.CanOperateOnNote));
 
                 ShowNoteDetailsCommand = ReactiveCommand.Create<Unit>(_ => ShowDetails());
+
+                SelectFirstNodeCommand = ReactiveCommand.Create<Unit>(_ => SelectFirstNode());
         }
 
 
 
 
-        //void DeleteInFirstTv()
-        //    {
-        //    //MessageBox.Show("ja pierdole");
-        //    Groups[0].Entries.RemoveAt(0);
-        //    var blabla = Groups[0].Items;
-        //    }
+        /// <summary>
+        /// select first node
+        /// </summary>
+        /// <returns></returns>
+        private void SelectFirstNode()
+        {
+            CurrentClickedNote = NoteTreeViewItemsFlat
+                .Where(x => x.Id == 3)
+                .FirstOrDefault();
+        }
+
+
+        /// <summary>
+        /// select first node
+        /// </summary>
+        /// <returns></returns>
+        private void FilterNodes(string searchText)
+        {
+            //show all nodes if nothing found
+            if (string.IsNullOrEmpty(searchText))
+            {
+                foreach (var treeNote in NoteTreeViewItemsFlat)
+                {
+                    treeNote.NodeVisibility = System.Windows.Visibility.Visible;
+                }
+                return;
+            }
+
+            var notesFound = NoteTreeViewItemsFlat
+                .Where(y => y.TreeNodeType == NoteTreeViewItem.NodeType.Note)
+                .Where(x => x.Name.ToLower().Contains(searchText.ToLower()))
+                .ToList();
+
+            //get only notes
+            var flatList = NoteTreeViewItemsFlat
+                .Where(x => x.TreeNodeType == NoteTreeViewItem.NodeType.Note)
+                .ToList();
+
+
+            foreach (var treeNote in flatList)
+            {
+                if (notesFound.Contains(treeNote))
+                    treeNote.NodeVisibility = System.Windows.Visibility.Visible;
+                else treeNote.NodeVisibility = System.Windows.Visibility.Collapsed;
+            }
+
+
+
+        }
+
+
 
         /// <summary>
         /// double click
@@ -133,10 +153,8 @@ namespace WPFEmptyProject
         /// <returns></returns>
         private void ShowDetails()
         {
-            //if (CurrentClickedNote != null)
-            //{
+
                 MessageBox.Show(CurrentClickedNote?.ParentTreeViewItem?.Name);
-            //}
         }
 
 
@@ -145,17 +163,18 @@ namespace WPFEmptyProject
 
 
 
-
+        /// <summary>
+        /// demo - populate list
+        /// </summary>
         public void populateTree()
         {
 
-            var foldersFromNoteBookService = new List<Folder>();
+            var notesAndFoldersList = new List<Folder>();
 
 
-            //var MainFolder = new Folder { Name = "Folder GL 1", ParentFolder=null,  }
 
 
-            foldersFromNoteBookService.Add(new Folder
+            notesAndFoldersList.Add(new Folder
             {
                 Id = 1,
                 Name = "Folder GL 1",
@@ -196,7 +215,7 @@ namespace WPFEmptyProject
                }
             });
 
-            foldersFromNoteBookService.Add(
+            notesAndFoldersList.Add(
                     new Folder
                     {
                         Name = "Folder GL 2",
@@ -210,7 +229,7 @@ namespace WPFEmptyProject
                     });
 
 
-            foldersFromNoteBookService.Add(new Folder
+            notesAndFoldersList.Add(new Folder
             {
                 Id = 5,
                 Name = "Folder GL 3",
@@ -253,111 +272,43 @@ namespace WPFEmptyProject
                }
             });
 
-            //Folders = Folders;
 
-            treeViewDataLoader.LoadFoldersToTreeViewItems(foldersFromNoteBookService);
+            treeViewDataLoader.LoadFoldersToTreeViewItems(notesAndFoldersList);
 
 
             NoteTreeViewItems = treeViewDataLoader.TreeViewItems;
 
+
+            
+            var folders = NoteTreeViewItems.Where(x => x.TreeNodeType == NoteTreeViewItem.NodeType.Folder).ToList();
+
+            //Here load notes and folders into NoteTreeViewItemsFlat
+            foreach (NoteTreeViewItem fol in folders)
+            PopulateFlatList(fol);
+
         }
 
+        /// <summary>
+        /// Recurently load all notes into NoteTreeViewItemsFlat observable collection
+        /// so we can search and use notes found to bind to CurrentClickedNote or filter nodes in tree view(by using visible observable property)
+        /// </summary>
+        /// <param name="folder"></param>
+        void PopulateFlatList(NoteTreeViewItem folder)
+        {
+            //then get notes (subitems with TreeNodeType == NoteTreeViewItem.NodeType.Folder)
+            var notesFound = folder.SubItems
+                //.Where(x => x.TreeNodeType == NoteTreeViewItem.NodeType.Note)
+                .ToList();
 
-        //private void Load2ndTree()
-        //{
-        //    foreach (var num in Enumerable.Range(1, 1))
-        //    {
-        //        var item = new TreeViewItem();
-        //        item.Name = string.Format("{0} {1}", "FOLDER", num);
-        //        item.TreeNodeType = TreeViewItem.NodeType.Folder;
+            if(notesFound != null)
+            foreach (NoteTreeViewItem noteFound in notesFound)
+                NoteTreeViewItemsFlat.Add(noteFound);
 
-        //        var notatka = new TreeViewItem();
-        //        notatka.Name = string.Format("{0} {1} : {2}'s {3}", "Notatka blabla", num, 333, 444);
-        //        notatka.TreeNodeType = TreeViewItem.NodeType.Note;
-        //        notatka.ParentFolder = item;
-        //        item.SubItems.Add(notatka);
-
-        //        var notatka1 = new TreeViewItem();
-        //        notatka1.Name = string.Format("{0} {1} : {2}'s {3}", "SELNotatka kuku", num, 44, 55);
-        //        notatka1.TreeNodeType = TreeViewItem.NodeType.Note;
-        //        //notatka1.IsSelected = true;
-        //        notatka1.ParentFolder = item;
-        //        item.SubItems.Add(notatka1);
-        //        //item.IsExpanded = true;
-
-
-        //        var pustyFolder = new TreeViewItem();
-        //        pustyFolder.Name = string.Format("{0} {1} : {2}'s {3}", "Folder", num, 44, 55);
-        //        pustyFolder.TreeNodeType = TreeViewItem.NodeType.Folder;
-        //        pustyFolder.ParentFolder = item;
-        //        item.SubItems.Add(pustyFolder);
-
-        //        var pustyFolder1 = new TreeViewItem();
-        //        pustyFolder1.Name = string.Format("{0} {1} : {2}'s {3}", "Folder", num, 44, 55);
-        //        pustyFolder1.TreeNodeType = TreeViewItem.NodeType.Folder;
-        //        pustyFolder1.ParentFolder = item;
-        //        item.SubItems.Add(pustyFolder);
-
-        //        for (int i = 0; i < 5; i++)
-        //        {
-        //            var child = new TreeViewItem();
-        //            child.Name = string.Format("{0} {1}'s {2}", "FOLDER", num, i);
-        //            child.TreeNodeType = TreeViewItem.NodeType.Folder;
-        //            child.ParentFolder = item;
-        //            item.SubItems.Add(child);
-        //            for (int j = 0; j < 3; j++)
-        //            {
-        //                var grandChild = new TreeViewItem();
-        //                grandChild.Name = string.Format("{0} {1} : {2}'s {3}", "KURAItem", num, i, j);
-        //                grandChild.ParentFolder = child;
-
-        //                if (j == 1 && i == 1)
-        //                {
-        //                    grandChild.IsSelected = true;
-        //                    CurrentClickedNote = grandChild;
-        //                }
-        //                child.SubItems.Add(grandChild);
-        //            }
-        //        }
-        //        Data2ndTree.Add(item);               
-        //    }
-        //}
-
-        //public void Load()
-        //{
-        //    Group grp1 = new Group() { Key = 1, Name = "Group 1", SubGroups = new ObservableCollection<Group>(), Entries = new ObservableCollection<Entry>() };
-        //    Group grp2 = new Group() { Key = 2, Name = "Group 2", SubGroups = new ObservableCollection<Group>(), Entries = new ObservableCollection<Entry>() };
-        //    Group grp3 = new Group() { Key = 3, Name = "Group 3", SubGroups = new ObservableCollection<Group>(), Entries = new ObservableCollection<Entry>() };
-        //    Group grp4 = new Group() { Key = 4, Name = "Group 4", SubGroups = new ObservableCollection<Group>(), Entries = new ObservableCollection<Entry>() };
-
-        //    //grp1
-        //    grp1.Entries.Add(new Entry() { Key = 1, Name = "Entry number 1" });
-        //    grp1.Entries.Add(new Entry() { Key = 2, Name = "Entry number 2" });
-        //    grp1.Entries.Add(new Entry() { Key = 3, Name = "Entry number 3" });
-
-        //    //grp2
-        //    grp2.Entries.Add(new Entry() { Key = 4, Name = "Entry number 4" });
-        //    grp2.Entries.Add(new Entry() { Key = 5, Name = "Entry number 5" });
-        //    grp2.Entries.Add(new Entry() { Key = 6, Name = "Entry number 6" });
-
-        //    //grp3
-        //    grp3.Entries.Add(new Entry() { Key = 7, Name = "Entry number 7" });
-        //    grp3.Entries.Add(new Entry() { Key = 8, Name = "Entry number 8" });
-        //    grp3.Entries.Add(new Entry() { Key = 9, Name = "Entry number 9" });
-
-        //    //grp4
-        //    grp4.Entries.Add(new Entry() { Key = 10, Name = "Entry number 10" });
-        //    grp4.Entries.Add(new Entry() { Key = 11, Name = "Entry number 11" });
-        //    grp4.Entries.Add(new Entry() { Key = 12, Name = "Entry number 12" });
-
-        //    grp4.SubGroups.Add(grp1);
-        //    grp2.SubGroups.Add(grp4);
-
-
-        //    Groups.Add(grp1);
-        //    Groups.Add(grp2);
-        //    Groups.Add(grp3);
-        //}
+            //and then enumerate folders (subitems)
+            foreach (NoteTreeViewItem fldr in folder.SubItems
+                .Where (x => x.TreeNodeType == NoteTreeViewItem.NodeType.Folder))
+                PopulateFlatList(fldr);
+        }
 
 
     }
