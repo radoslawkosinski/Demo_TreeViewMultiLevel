@@ -29,6 +29,9 @@ namespace WPFEmptyProject
         }
 
 
+
+
+
         /// <summary>
         /// flat version of NoteTreeViewItems with pointers to notes only
         /// we need it for searching so no need to use recurency 
@@ -211,7 +214,48 @@ namespace WPFEmptyProject
                                             }
                                     }
 
-                }
+                },
+                                        new Folder
+                                            {
+                                                Name = "2nd SubFolder GL 1", Id=77,
+                                                            Notes = new List<Note>
+                                                            {
+                                                                new Note {Name="1234567890", Id=23, Description="w podfol", FileName=@"C:\ZZZZZ\kuku", FolderId = 2 },
+                                                                new Note { Name = "notatka1 podfol 1 A", Id = 33, Description = "w podfol", FileName = @"C:\ZZZZZ\kuku" },
+                                                                new Note { Name = "notatka2 podfol 1 B", Id = 43, Description = "w podfol", FileName = @"C:\ZZZZZ\kuku" },
+                                                                new Note { Name = "piata notatka notatka3 podfol 1 C", Id = 53, Description = "w podfol", FileName = @"C:\ZZZZZ\kuku" }
+                                                            },
+                                                            Folders = new List<Folder>
+                                                            {
+                                                                    new Folder
+                                                                    {
+                                                                        Name = "2nd SubFolder GL 1", Id=1223,
+                                                                                    Notes = new List<Note>
+                                                                                    {
+                                                                                        new Note { Name = "nothing 777", Id = 9722, Description = "w zagn", FileName = @"C:\ZZZZZ\kuku", FolderId = 1223 },
+                                                                                        new Note { Name = "sample text 123", Id = 98233, Description = "w zagn", FileName = @"C:\ZZZZZ\kuku", FolderId = 1223 },
+                                                                                        new Note { Name = "nic tu nie ma", Id = 9933, Description = "w zagn", FileName = @"C:\ZZZZZ\kuku", FolderId = 1223 },
+                                                                                        new Note { Name = "ipsum lorem 123", Id = 915001, Description = "w zagn", FileName = @"C:\ZZZZZ\kuku", FolderId = 1223 }
+                                                                                    }
+                                                                                    ,Folders= new List<Folder>
+                                                                                    {
+                                                                                        new Folder
+                                                                                        {
+                                                                                             Name = "PROBLEM 111", Id=19284,
+                                                                                              Notes = new List<Note>
+                                                                                                {
+                                                                                                    new Note {Name="this is sample note to demonstrate problem", Id=496, Description="w zagn", FileName=@"C:\ZZZZZ\kuku", FolderId = 19284 },
+                                                                                                    new Note { Name = "sample text 9979999 ", Id = 49722, Description = "w zagn", FileName = @"C:\ZZZZZ\kuku", FolderId = 19284 },
+                                                                                                    new Note { Name = "abrakadabra blablablabla", Id = 498233, Description = "w zagn", FileName = @"C:\ZZZZZ\kuku", FolderId = 19284 },
+                                                                                                    new Note { Name = "test test ", Id = 49933, Description = "w zagn", FileName = @"C:\ZZZZZ\kuku", FolderId = 19284 },
+                                                                                                    new Note { Name = "qua qua", Id = 4915001, Description = "w zagn", FileName = @"C:\ZZZZZ\kuku", FolderId = 19284 }
+                                                                                                }
+                                                                                        }
+                                                                                    }
+                                                                    }
+                                                            }
+
+                                        }
                }
             });
 
